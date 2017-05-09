@@ -1,0 +1,74 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE")
+    }
+}
+
+plugins {
+    id "com.github.samueltbrown.cucumber" version "0.9"
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+project.ext {
+    cucumberVersion = '1.2.5'
+    junitVersion = '4.12'
+}
+
+tasks.withType(Test) {
+    scanForTestClasses = false
+    include "**/*Test.class"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.1'
+}
+
+jar {
+    baseName = 'trade-service'
+    version = '0.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.warnings = false
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-devtools")
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.4.3.RELEASE'
+    compile("io.springfox:springfox-swagger2:2.0.2")
+    compile("io.springfox:springfox-swagger-ui:2.0.2")
+    compile group: 'com.jayway.restassured', name: 'rest-assured', version: '2.9.0'
+    compile group: 'org.json', name: 'json', version: '20090211'
+    compile group: 'joda-time', name: 'joda-time', version: '2.7'
+    compile("org.springframework.boot:spring-boot-starter-activemq")
+    compile("org.apache.activemq:activemq-broker")
+    compile("com.fasterxml.jackson.core:jackson-databind")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    testCompile('com.jayway.jsonpath:json-path')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile 'info.cukes:cucumber-java:' + cucumberVersion
+    testCompile 'info.cukes:cucumber-junit:' + cucumberVersion
+    testCompile 'info.cukes:cucumber-spring:' + cucumberVersion
+    testCompile 'junit:junit:' + junitVersion
+    cucumberCompile 'info.cukes:cucumber-java:' + cucumberVersion
+}
